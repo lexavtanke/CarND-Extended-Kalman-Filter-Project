@@ -1,7 +1,10 @@
 #include "kalman_filter.h"
+#include <iostream>
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
+
+
 
 /* 
  * Please note that the Eigen library does not initialize 
@@ -29,25 +32,55 @@ void KalmanFilter::Predict() {
   x_ = F_ * x_;
   MatrixXd Ft = F_.transpose();
   P_ = F_ * P_ * Ft + Q_;
+  std::cout << "P_ in predict method"<< std::endl;
+  std::cout << P_ << std::endl;
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
   /**
    * TODO: update the state by using Kalman Filter equations
    */
+  std::cout << "update method before computation"<< std::endl;
   VectorXd z_pred = H_ * x_;
+  std::cout << "z_pred" << std::endl;
+  std::cout << z_pred << std::endl;
   VectorXd y = z - z_pred;
+  std::cout << "y" << std::endl;
+  std::cout << y << std::endl;
   MatrixXd Ht = H_.transpose();
+  std::cout << "Ht" << std::endl;
+  std::cout << Ht << std::endl;
+  std::cout << "P_" << std::endl;
+  std::cout << P_ << std::endl;
+  std::cout << "H_" << std::endl;
+  std::cout << H_ << std::endl;
+  std::cout << "R_" << std::endl;
+  std::cout << R_ << std::endl;  
   MatrixXd S = H_ * P_ * Ht + R_;
+  std::cout << S << std::endl;
   MatrixXd Si = S.inverse();
+  std::cout << "Si" << std::endl;
+  std::cout << Si << std::endl;
   MatrixXd PHt = P_ * Ht;
+  std::cout << "PHt" << std::endl;
+  std::cout << PHt << std::endl;
   MatrixXd K = PHt * Si;
 
   //new estimate
   x_ = x_ + (K * y);
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
+  std::cout << "P_" << std::endl; 
+  std::cout << P_ << std::endl; 
+  std::cout << "I" << std::endl; 
+  std::cout << I << std::endl;
+  std::cout << "K" << std::endl;
+  std::cout << K << std::endl;
+  std::cout << "H_" << std::endl;
+  std::cout << H_ << std::endl;
   P_ = (I - K * H_) * P_;
+  std::cout << "P_ in update method"<< std::endl;
+  std::cout << P_ << std::endl;
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
